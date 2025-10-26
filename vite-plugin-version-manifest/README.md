@@ -33,9 +33,7 @@ import { defineConfig } from 'vite';
 import versionManifest from 'vite-plugin-version-manifest';
 
 export default defineConfig({
-  plugins: [
-    versionManifest(),
-  ],
+  plugins: [versionManifest()],
 });
 ```
 
@@ -61,10 +59,10 @@ export default defineConfig({
 });
 ```
 
-| Option        | Type      | Default                   | Description                               |
-|---------------|-----------|---------------------------|-------------------------------------------|
-| `verbose`     | `boolean` | `false`                   | Show logs during manifest generation.     |
-| `outFileName` | `string`  | `'version-manifest.json'` | Name of the generated manifest file.      |
+| Option        | Type      | Default                   | Description                           |
+| ------------- | --------- | ------------------------- | ------------------------------------- |
+| `verbose`     | `boolean` | `false`                   | Show logs during manifest generation. |
+| `outFileName` | `string`  | `'version-manifest.json'` | Name of the generated manifest file.  |
 
 ## 📄 Example Output
 

@@ -7,42 +7,40 @@ import type { Runtime } from 'node:inspector/promises';
 const PLUGIN_NAME = 'vite-plugin-version-manifest';
 
 interface Manifest {
-  environment: string,
+  environment: string;
   versions: {
-    package: string,
-    node: string,
-  },
+    package: string;
+    node: string;
+  };
   gitInfo: {
-    commitHash: string,
-    branch: string,
-  },
+    commitHash: string;
+    branch: string;
+  };
   buildInfo: {
-    time: string,
-    duration: number
-  },
+    time: string;
+    duration: number;
+  };
+  runtimeInfo: RuntimeInfo;
 }
- 
 
 type Runtime = 'Node.js' | 'Deno' | 'Bun';
 
 interface RuntimeInfo {
-  runtime: Runtime,
-  runtimeVersion: string,
+  runtime: Runtime;
+  runtimeVersion: string;
 }
 
-
 interface Config {
-  verbose: boolean,
-  outFileName: string
+  verbose: boolean;
+  outFileName: string;
 }
 
 let pluginConfig: Config = {
   verbose: false,
-  outFileName: 'version-manifest.json'
-}
+  outFileName: 'version-manifest.json',
+};
 
 const versionManifest = (config: Partial<Config> = pluginConfig): Plugin => {
-
   pluginConfig = { ...pluginConfig, ...config };
 
   let viteConfig: ResolvedConfig;
@@ -52,7 +50,7 @@ const versionManifest = (config: Partial<Config> = pluginConfig): Plugin => {
   return {
     // Mandatory: used for error messages
     name: PLUGIN_NAME,
-  
+
     configResolved(resolvedConfig) {
       viteConfig = resolvedConfig;
     },
@@ -61,7 +59,7 @@ const versionManifest = (config: Partial<Config> = pluginConfig): Plugin => {
       buildStartTime = Date.now();
     },
 
-    closeBundle () {
+    closeBundle() {
       const environment = viteConfig.mode;
       const version = getVersion(viteConfig);
       const gitInfo = getGitInfo();
@@ -78,21 +76,26 @@ const versionManifest = (config: Partial<Config> = pluginConfig): Plugin => {
         gitInfo,
         buildInfo: {
           time: buildTime,
-          duration: buildDuration
+          duration: buildDuration,
         },
-      }
+        runtimeInfo,
+      };
 
       const stringifiedManifest = JSON.stringify(manifest, null, 2);
 
       writeFileSync(
-        join(viteConfig.root, viteConfig.build.outDir, pluginConfig.outFileName),
+        join(
+          viteConfig.root,
+          viteConfig.build.outDir,
+          pluginConfig.outFileName
+        ),
         stringifiedManifest
       );
 
       print(`Version Manifest generated: ${stringifiedManifest}`, 'info');
-    }
+    },
   };
-}
+};
 
 const getVersion = (config: ResolvedConfig): string => {
   const packageJsonPath = join(config.root, 'package.json');
@@ -104,53 +107,59 @@ const getVersion = (config: ResolvedConfig): string => {
   const { version } = packageJson;
 
   return version ?? 'unavailable';
-}
+};
 
-const getGitInfo = (): { commitHash: string, branch: string } => {
+const getGitInfo = (): { commitHash: string; branch: string } => {
   // If the user did not initialize a git repository, we just return 'unavailable'
   try {
-    const gitRevisionIdentifier = execSync('git rev-parse --short HEAD', { stdio: 'pipe' });
-    const gitBranch = execSync('git rev-parse --abbrev-ref HEAD', { stdio: 'pipe' });
+    const gitRevisionIdentifier = execSync('git rev-parse --short HEAD', {
+      stdio: 'pipe',
+    });
+    const gitBranch = execSync('git rev-parse --abbrev-ref HEAD', {
+      stdio: 'pipe',
+    });
 
-    return  {
+    return {
       commitHash: gitRevisionIdentifier.toString().trim(),
-      branch: gitBranch.toString().trim()
+      branch: gitBranch.toString().trim(),
     };
-  } catch (error) {
-    print(`Could not retrieve git info, using 'unavailable' as commit hash and branch name.`, 'warn');
+  } catch {
+    print(
+      `Could not retrieve git info, using 'unavailable' as commit hash and branch name.`,
+      'warn'
+    );
 
     return {
       commitHash: 'unavailable',
-      branch: 'unavailable'
+      branch: 'unavailable',
     };
   }
-}
+};
 
-const getRuntimeInfo = () : RuntimeInfo => {
-
+const getRuntimeInfo = (): RuntimeInfo => {
   const getRuntimeName = (): Runtime => {
     // Cast to `any` to bypass TypeScript's strict checks
-    if (typeof (globalThis as any)['Bun'] !== 'undefined') {
+    if (typeof (globalThis as never)['Bun'] !== 'undefined') {
       return 'Bun';
     }
 
-    if (typeof (globalThis as any)['Deno'] !== 'undefined') {
+    if (typeof (globalThis as never)['Deno'] !== 'undefined') {
       return 'Deno';
     }
 
     return 'Node.js';
-  }
+  };
 
   return {
     runtime: getRuntimeName(),
     runtimeVersion: process.version,
   };
-}
+};
 
 const print = (message: string, level: 'info' | 'warn' | 'error' = 'info') => {
   if (pluginConfig.verbose) {
     console[level](`[${PLUGIN_NAME}] ${message}`);
   }
-}
+};
 
 export default versionManifest;

@@ -15,7 +15,7 @@
 
     /* Type settings: */
     "types": ["node"],
-    
+
     /* We don't need to output JS files, just types (for now) */
     "declaration": true,
     "emitDeclarationOnly": true,
