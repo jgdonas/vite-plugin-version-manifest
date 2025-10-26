@@ -2,8 +2,33 @@ import type { Plugin, ResolvedConfig } from 'vite';
 import { join } from 'node:path';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { execSync } from 'node:child_process';
+import type { Runtime } from 'node:inspector/promises';
 
 const PLUGIN_NAME = 'vite-plugin-version-manifest';
+
+interface Manifest {
+  environment: string,
+  versions: {
+    package: string,
+    node: string,
+  },
+  gitInfo: {
+    commitHash: string,
+    branch: string,
+  },
+  buildInfo: {
+    time: string,
+    duration: number
+  },
+}
+ 
+
+type Runtime = 'Node.js' | 'Deno' | 'Bun';
+
+interface RuntimeInfo {
+  runtime: Runtime,
+  runtimeVersion: string,
+}
 
 
 interface Config {
@@ -22,6 +47,8 @@ const versionManifest = (config: Partial<Config> = pluginConfig): Plugin => {
 
   let viteConfig: ResolvedConfig;
 
+  let buildStartTime: number;
+
   return {
     // Mandatory: used for error messages
     name: PLUGIN_NAME,
@@ -30,15 +57,29 @@ const versionManifest = (config: Partial<Config> = pluginConfig): Plugin => {
       viteConfig = resolvedConfig;
     },
 
-    async closeBundle () {
-      const version = getVersion(viteConfig);
-      const commitHash = getCommitHash();
-      const buildTime = new Date().toISOString();
+    buildStart() {
+      buildStartTime = Date.now();
+    },
 
-      const manifest = {
-        version,
-        commitHash,
-        dateTime: buildTime, 
+    closeBundle () {
+      const environment = viteConfig.mode;
+      const version = getVersion(viteConfig);
+      const gitInfo = getGitInfo();
+      const buildTime = new Date().toISOString();
+      const buildDuration = Date.now() - buildStartTime;
+      const runtimeInfo = getRuntimeInfo();
+
+      const manifest: Manifest = {
+        environment,
+        versions: {
+          package: version,
+          node: process.version,
+        },
+        gitInfo,
+        buildInfo: {
+          time: buildTime,
+          duration: buildDuration
+        },
       }
 
       const stringifiedManifest = JSON.stringify(manifest, null, 2);
@@ -65,17 +106,45 @@ const getVersion = (config: ResolvedConfig): string => {
   return version ?? 'unavailable';
 }
 
-const getCommitHash = (): string => {
+const getGitInfo = (): { commitHash: string, branch: string } => {
   // If the user did not initialize a git repository, we just return 'unavailable'
   try {
     const gitRevisionIdentifier = execSync('git rev-parse --short HEAD', { stdio: 'pipe' });
+    const gitBranch = execSync('git rev-parse --abbrev-ref HEAD', { stdio: 'pipe' });
 
-    return  gitRevisionIdentifier.toString().trim();
+    return  {
+      commitHash: gitRevisionIdentifier.toString().trim(),
+      branch: gitBranch.toString().trim()
+    };
   } catch (error) {
-    print(`Could not retrieve git commit hash, using 'unavailable' as commit hash.`, 'warn');
+    print(`Could not retrieve git info, using 'unavailable' as commit hash and branch name.`, 'warn');
 
-    return 'unavailable';
+    return {
+      commitHash: 'unavailable',
+      branch: 'unavailable'
+    };
   }
+}
+
+const getRuntimeInfo = () : RuntimeInfo => {
+
+  const getRuntimeName = (): Runtime => {
+    // Cast to `any` to bypass TypeScript's strict checks
+    if (typeof (globalThis as any)['Bun'] !== 'undefined') {
+      return 'Bun';
+    }
+
+    if (typeof (globalThis as any)['Deno'] !== 'undefined') {
+      return 'Deno';
+    }
+
+    return 'Node.js';
+  }
+
+  return {
+    runtime: getRuntimeName(),
+    runtimeVersion: process.version,
+  };
 }
 
 const print = (message: string, level: 'info' | 'warn' | 'error' = 'info') => {
