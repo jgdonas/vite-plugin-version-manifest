@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    /* Base Options: */
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "ESNext",
+    "allowSyntheticDefaultImports": true,
+    "verbatimModuleSyntax": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+
+    /* Module settings: */
+    "module": "ESNext",
+    "moduleResolution": "Node",
+
+    /* Type settings: */
+    "types": ["node"],
+    
+    /* We don't need to output JS files, just types (for now) */
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist"
+  },
+  "include": ["index.ts"] // Tell it which files to check
+}
