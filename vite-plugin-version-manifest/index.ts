@@ -12,15 +12,17 @@ interface Manifest {
     package: string;
     node: string;
   };
-  gitInfo: {
-    commitHash: string;
-    branch: string;
-  };
+  gitInfo: GitInfo;
   buildInfo: {
     time: string;
     duration: number;
   };
   runtimeInfo: RuntimeInfo;
+}
+
+interface GitInfo {
+  commitHash: string;
+  branch: string;
 }
 
 type Runtime = 'Node.js' | 'Deno' | 'Bun';
@@ -109,7 +111,7 @@ const getVersion = (config: ResolvedConfig): string => {
   return version ?? 'unavailable';
 };
 
-const getGitInfo = (): { commitHash: string; branch: string } => {
+const getGitInfo = (): GitInfo => {
   // If the user did not initialize a git repository, we just return 'unavailable'
   try {
     const gitRevisionIdentifier = execSync('git rev-parse --short HEAD', {
