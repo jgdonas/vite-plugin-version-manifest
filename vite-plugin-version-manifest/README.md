@@ -10,6 +10,7 @@ A simple Vite plugin that generates a version manifest file with build and versi
 
 - Generates a JSON manifest with useful build-time information.
 - Includes project version from `package.json`.
+- Includes info about the runtime (Node.js, Deno, Bun) and its version.
 - Includes Git commit hash and branch name.
 - Includes build timestamp and duration.
 - Zero dependencies.
@@ -71,14 +72,21 @@ The generated `version-manifest.json` will look like this:
 ```json
 {
   "environment": "production",
-  "version": "1.0.0",
+  "versions": {
+    "package": "1.0.0",
+    "node": "v20.11.0"
+  },
   "gitInfo": {
     "commitHash": "a1b2c3d",
     "branch": "main"
   },
-  "build": {
+  "buildInfo": {
     "time": "2025-10-26T10:00:00.000Z",
     "duration": 1234
+  },
+  "runtimeInfo": {
+    "runtime": "Node.js",
+    "version": "v20.11.0"
   }
 }
 ```

@@ -27,7 +27,7 @@ type Runtime = 'Node.js' | 'Deno' | 'Bun';
 
 interface RuntimeInfo {
   runtime: Runtime;
-  runtimeVersion: string;
+  version: string;
 }
 
 interface Config {
@@ -152,7 +152,7 @@ const getRuntimeInfo = (): RuntimeInfo => {
 
   return {
     runtime: getRuntimeName(),
-    runtimeVersion: process.version,
+    version: process.version,
   };
 };
 
