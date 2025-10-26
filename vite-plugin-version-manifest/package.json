@@ -21,7 +21,7 @@
   ],
   "author": "Jose Antonio González Doñas <jose.gonzalez.donas@gmail.com>",
   "license": "ISC",
-  "description": "",
+  "description": "A Vite plugin to generate a version manifest file with build metadata.",
   "devDependencies": {
     "@eslint/js": "^9.38.0",
     "@types/node": "^24.9.1",
