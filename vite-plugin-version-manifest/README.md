@@ -18,11 +18,11 @@ A simple Vite plugin that generates a version manifest file with build and versi
 ## 📦 Installation
 
 ```bash
-npm install vite-plugin-version-manifest --save-dev
+npm install @jose.donas/vite-plugin-version-manifest --save-dev
 # or
-yarn add vite-plugin-version-manifest --dev
+yarn add @jose.donas/vite-plugin-version-manifest --dev
 # or
-pnpm add vite-plugin-version-manifest --save-dev
+pnpm add @jose.donas/vite-plugin-version-manifest --save-dev
 ```
 
 ## 🚀 Usage
