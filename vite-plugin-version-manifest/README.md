@@ -1,8 +1,8 @@
 # Vite Plugin Version Manifest
 
-[![NPM Version](https://img.shields.io/npm/v/vite-plugin-version-manifest.svg)](https://www.npmjs.com/package/vite-plugin-version-manifest)
-[![License](https://img.shields.io/npm/l/vite-plugin-version-manifest.svg)](./LICENSE)
-[![Downloads](https://img.shields.io/npm/dt/vite-plugin-version-manifest.svg)](https://www.npmjs.com/package/vite-plugin-version-manifest)
+[![NPM Version](https://img.shields.io/npm/v/vite-plugin-version-manifest.svg)](https://www.npmjs.com/package/@jose.donas/vite-plugin-version-manifest)
+[![License](https://img.shields.io/npm/l/@jose.donas/vite-plugin-version-manifest.svg)](./LICENSE)
+[![Downloads](https://img.shields.io/npm/dt/vite-plugin-version-manifest.svg)](https://www.npmjs.com/package/@jose.donas/vite-plugin-version-manifest)
 
 A simple Vite plugin that generates a version manifest file with build and version control information.
 
