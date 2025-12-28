@@ -31,7 +31,7 @@ Add the plugin to your `vite.config.ts`:
 
 ```typescript
 import { defineConfig } from 'vite';
-import versionManifest from 'vite-plugin-version-manifest';
+import versionManifest from '@jose.donas/vite-plugin-version-manifest';
 
 export default defineConfig({
   plugins: [versionManifest()],
