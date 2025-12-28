@@ -22,6 +22,7 @@ jobs:
         with:
           node-version: 22
           cache: 'npm'
+          cache-dependency-path: vite-plugin-version-manifest/package-lock.json
           registry-url: 'https://registry.npmjs.org'
           scope: '@jose.donas' # From your package.json
 
