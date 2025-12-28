@@ -11,11 +11,12 @@
     "lint:fix": "eslint . --fix"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jgdonas/vite-plugin-version-manifest"
+    "url": "git+https://github.com/jgdonas/vite-plugin-version-manifest.git"
   },
   "keywords": [
     "vite",
