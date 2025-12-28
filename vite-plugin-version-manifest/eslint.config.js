@@ -4,7 +4,7 @@ import globals from 'globals';
 
 export default [
   // Start with the recommended rules for...
-  js.configs.recommended,          // 1. Plain JavaScript
+  js.configs.recommended, // 1. Plain JavaScript
   ...tseslint.configs.recommended, // 2. TypeScript
 
   // Global ignores

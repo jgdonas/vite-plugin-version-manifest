@@ -2,11 +2,10 @@ import type { Plugin, ResolvedConfig } from 'vite';
 import { join } from 'node:path';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { execSync } from 'node:child_process';
-import type { Runtime } from 'node:inspector/promises';
 
 const PLUGIN_NAME = 'vite-plugin-version-manifest';
 
-interface Manifest {
+export interface Manifest {
   environment: string;
   versions: {
     package: string;
