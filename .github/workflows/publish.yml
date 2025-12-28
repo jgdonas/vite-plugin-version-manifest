@@ -1,5 +1,4 @@
 name: Publish Package to npm
-description: Builds the project and publishes it to the npm registry
 
 on:
   workflow_call:
@@ -23,14 +22,15 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           scope: '@jose.donas' # From your package.json
 
-      - name: Move to package directory
-        run: cd vite-plugin-version-manifest
 
       - name: Install dependencies
+        working-directory: ./vite-plugin-version-manifest
         run: npm ci
 
       - name: Build package
+        working-directory: ./vite-plugin-version-manifest
         run: npm run build
 
       - name: Publish to npm
+        working-directory: ./vite-plugin-version-manifest
         run: npm publish --no-git-checks
